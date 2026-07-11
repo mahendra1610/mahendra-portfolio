@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artifact 1: CineMatch | Mahendra Rasuri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0E14;
+    --panel:#10141C;
+    --panel-2:#141A24;
+    --border:#232B38;
+    --text:#D6E0EA;
+    --text-dim:#8B96A5;
+    --muted:#5B6472;
+    --accent:#29B5E8;
+    --keyword:#C792EA;
+    --string:#9CCC65;
+    --comment:#5B6472;
+    --success:#7EE787;
+    --warm:#F5A623;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(41,181,232,0.06), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:40px 20px 80px;
+  }
+  .wrap{max-width:920px;margin:0 auto;}
+  .window{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 30px 80px -30px rgba(0,0,0,0.6);
+  }
+  .titlebar{
+    display:flex;align-items:center;gap:10px;
+    padding:12px 16px;background:var(--panel-2);
+    border-bottom:1px solid var(--border);
+  }
+  .dot{width:11px;height:11px;border-radius:50%;}
+  .dot.r{background:#FF5F57;} .dot.y{background:#FEBC2E;} .dot.g{background:#28C840;}
+  .titlebar .path{margin-left:12px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text-dim);}
+
+  .tabs{display:flex;background:var(--panel-2);border-bottom:1px solid var(--border);}
+  .tab{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;
+    padding:10px 18px;color:var(--text-dim);
+    border-right:1px solid var(--border);
+    text-decoration:none;display:flex;align-items:center;gap:8px;
+    transition:background .15s ease, color .15s ease;
+  }
+  .tab:hover{background:rgba(255,255,255,0.02);color:var(--text);}
+  .tab.active{background:var(--bg);color:var(--accent);border-bottom:2px solid var(--accent);margin-bottom:-1px;}
+  .tab .dot-status{width:6px;height:6px;border-radius:50%;background:var(--success);}
+
+  .content{padding:30px 30px 10px;}
+
+  .cm{
+    font-family:'JetBrains Mono',monospace;
+    color:var(--comment);font-style:italic;font-size:13px;
+    margin:26px 0 6px;
+  }
+  .cm:first-child{margin-top:0;}
+  .sql-line{
+    font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-dim);
+    margin-bottom:14px;
+  }
+  .kw{color:var(--keyword);} .str{color:var(--string);} .fn{color:var(--accent);}
+
+  h1.title{
+    font-family:'JetBrains Mono',monospace;
+    font-size:22px;font-weight:700;color:var(--text);
+    margin:0 0 4px;
+  }
+  .subtitle{
+    font-family:'JetBrains Mono',monospace;color:var(--accent);
+    font-size:12.5px;margin-bottom:6px;
+  }
+  .link-line{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;margin-bottom:22px;
+  }
+  .link-line a{color:var(--success);text-decoration:none;border-bottom:1px dashed var(--success);}
+  .link-line a:hover{color:var(--text);}
+
+  h2.field{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;color:var(--accent);
+    display:flex;align-items:center;gap:10px;
+    margin:0 0 10px;
+  }
+  h2.field::before{content:"›";color:var(--warm);}
+
+  p.prose, li.prose{
+    font-family:'Inter',sans-serif;font-size:14.5px;line-height:1.75;
+    color:var(--text-dim);margin:0 0 12px;
+  }
+  p.prose strong, li.prose strong{color:var(--text);font-weight:600;}
+  ul.plist{margin:0 0 6px;padding-left:20px;}
+  ul.plist li{margin-bottom:10px;}
+
+  .field-block{
+    border-left:2px solid var(--border);
+    padding-left:18px;margin-bottom:30px;
+  }
+
+  /* test log styling */
+  .log{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;
+    background:rgba(255,255,255,0.015);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:16px 18px;
+    margin-bottom:12px;
+  }
+  .log .tag{color:var(--success);}
+  .log .tag.warn{color:var(--warm);}
+  .log .in{color:var(--text-dim);}
+  .log .out{color:var(--text);}
+
+  table.results{
+    width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:12.5px;
+    margin-bottom:10px;
+  }
+  table.results th{
+    text-align:left;color:var(--accent);font-weight:600;
+    padding:10px 14px;border-bottom:1px solid var(--border);
+    background:rgba(41,181,232,0.04);
+  }
+  table.results td{
+    padding:10px 14px;border-bottom:1px solid var(--border);
+    color:var(--text-dim);vertical-align:top;
+  }
+  table.results td.k{color:var(--text);font-weight:500;white-space:nowrap;}
+  table.results tr:last-child td{border-bottom:none;}
+
+  .prompt-footer{
+    font-family:'JetBrains Mono',monospace;font-size:13px;
+    padding:8px 30px 26px;color:var(--text-dim);
+    display:flex;align-items:center;gap:8px;
+  }
+  .prompt-footer .user{color:var(--success);}
+  .prompt-footer .path2{color:var(--accent);}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--accent);animation:blink 1.1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+  .cta{color:var(--text);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;}
+  .cta:hover{color:var(--accent);}
+
+  @media (max-width:640px){
+    .content{padding:22px 18px 4px;}
+    .field-block{padding-left:12px;}
+    table.results th, table.results td{padding:8px 8px;}
+    .prompt-footer{padding-left:18px;padding-right:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="window">
+    <div class="titlebar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="path">~/portfolio/mahendra_rasuri</span>
+    </div>
+    <div class="tabs">
+      <a class="tab" href="index.html"><span class="dot-status"></span>bio.sql</a>
+      <a class="tab active" href="artifact1.html">cinematch_artifact.sql</a>
+    </div>
+
+    <div class="content">
+      <div class="cm">-- cinematch_artifact.sql, AIML-500 AI Lab, Artifact 1</div>
+      <div class="sql-line"><span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="fn">artifacts</span> <span class="kw">WHERE</span> id = <span class="str">1</span>;</div>
+
+      <h1 class="title">CineMatch: An AI-Powered Movie Recommendation Chatbot</h1>
+      <div class="subtitle">AIML-500 · AI Lab · Design Thinking + Generative AI Practice</div>
+      <div class="link-line">→ <a href="https://app.mizou.com/call-check?ID=sim-g8GIcNKKL9E3iOHh_TYIFsesFl6ZzEDFyJq1JVxz_uo-1951" target="_blank" rel="noopener">Live CineMatch chatbot (Mizou)</a></div>
+
+      <div class="field-block">
+        <h2 class="field">Introduction</h2>
+        <p class="prose">This artifact documents an end-to-end AI product exercise: designing, building, and testing a conversational movie recommendation chatbot using design-thinking methodology, alongside structured practice across four categories of generative AI tools, namely a base LLM, a custom GPT, an AI research assistant, and the CineMatch build itself.</p>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Description</h2>
+        <p class="prose">CineMatch is a conversational assistant, built on the Mizou platform, that recommends movies through natural back-and-forth dialogue rather than a static quiz or form. Before building it, I ran comparative practice across other AI tool types: an identical prompt across three LLMs (Gemini, ChatGPT, Claude), a custom GPT called Consensus (a research-synthesis tool), and STORM, a multi-perspective AI research assistant. Applying the define, ideate, prototype, test framework to CineMatch itself, I landed on a "conversational hybrid" design: a couple of guided questions followed by open-ended follow-up, because it balances structure with a natural feel.</p>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Objective</h2>
+        <p class="prose">To apply design-thinking methodology to a real AI product build, and to develop a working, evidence-based understanding of how different categories of generative AI tools behave differently on the same underlying task, a skill directly relevant to evaluating and selecting AI tools professionally.</p>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Process</h2>
+        <ul class="plist">
+          <li class="prose"><strong>Defined the problem:</strong> reframed from "generate a list of movies" to "help someone quickly find something they'll enjoy without over-explaining."</li>
+          <li class="prose"><strong>Compared base LLMs:</strong> ran an identical Context/Task/Constraints prompt across Gemini, ChatGPT, and Claude. All three converged on <em>Arrival</em>, <em>Ex Machina</em>, and <em>Sicario</em>; Claude briefly self-corrected a release-date error, and ChatGPT was the only one to volunteer an extra "tier 2" list unasked.</li>
+          <li class="prose"><strong>Tested a custom GPT</strong> (Consensus) across six follow-up turns, including re-scoping, validating a stated opinion with evidence, and explaining what it deliberately excluded.</li>
+          <li class="prose"><strong>Tested a multi-agent research assistant</strong> (STORM), observing four simulated researcher personas interview simulated experts before synthesizing a cited article, then verified the output against a topic I already knew well.</li>
+          <li class="prose"><strong>Ideated</strong> three CineMatch designs (fixed quiz, fully conversational, hybrid) and selected the hybrid.</li>
+          <li class="prose"><strong>Prototyped in Mizou</strong> after Chatbase's onboarding required a website/URL knowledge source that didn't fit this use case, so I pivoted tools rather than forcing a workaround.</li>
+        </ul>
+
+        <div class="log">
+          <div><span class="tag">✓ PASS</span> <span class="in">"I want a thriller"</span> → <span class="out">bot asked a calibrating follow-up before recommending</span></div>
+          <div><span class="tag">✓ PASS</span> <span class="in">"Something light and funny" (mid-convo pivot)</span> → <span class="out">cleanly abandoned thread, re-asked for new mood</span></div>
+          <div><span class="tag">✓ PASS</span> <span class="in">"I loved Parasite, what else?"</span> → <span class="out">3 recs, each reasoned against Parasite's tone</span></div>
+          <div><span class="tag">✓ PASS</span> <span class="in">"I have seen all of them"</span> → <span class="out">pivoted to deeper-cut tier, kept refining</span></div>
+        </div>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Tools and Technologies Used</h2>
+        <p class="prose">Mizou (chatbot builder), Gemini, ChatGPT, Claude, Consensus (custom GPT), STORM (AI research assistant), Microsoft Word (APA 7 documentation)</p>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Value Proposition</h2>
+        <p class="prose">This artifact shows I can take an AI concept from problem definition through a working, tested product, not just a written plan, and that I can evaluate AI tools critically across categories rather than treating them as interchangeable. That same evaluative instinct is what I already apply to choosing the right data tool or query approach in my SQL/dbt work.</p>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Unique Value</h2>
+        <p class="prose">Most portfolio pieces show either technical build skill or analytical comparison. This artifact shows both in one exercise: a shipped conversational AI prototype, tested against real scenarios, backed by a structured, evidence-based comparison of the AI tools that could power it.</p>
+      </div>
+
+      <div class="field-block">
+        <h2 class="field">Relevance</h2>
+        <p class="prose">For Product Manager and AI-adjacent roles, the ability to prototype an AI-driven feature end-to-end, critically assess model behavior, and pivot when a tool's defaults don't fit the use case is the same judgment behind good product decisions: knowing when a feature, tool, or approach is the wrong fit and adjusting rather than forcing it, then being able to explain that decision clearly to both engineers and stakeholders.</p>
+      </div>
+
+      <div class="field-block" style="border-left:2px solid var(--border);">
+        <h2 class="field">References</h2>
+        <p class="prose" style="color:var(--muted);">See the reference list in the submitted AIML-500 AI Lab documentation for full APA 7 citations.</p>
+      </div>
+    </div>
+
+    <div class="prompt-footer">
+      <span class="user">mahendra@portfolio</span>:<span class="path2">~$</span>
+      <span>cd <a class="cta" href="index.html">../bio.sql</a></span>
+      <span class="cursor"></span>
+    </div>
+  </div>
+</div>
+</body>
+</html>
